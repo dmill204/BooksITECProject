@@ -1,0 +1,55 @@
+<!-- Book search page: for users to search books by key terms.
+
+Use a textbox to accept user input of search terms.
+
+After the search button is clicked, dynamically construct the service request URL based on the search term and call the service.
+
+Process the service response (JSON format) and display search results. There is no need to do AJAX at this time, but you can if you understand it and know how to.
+
+Display the first 60 results (at most) with paging (you can decide the number of results per page and number of pages). Use a dropdown or radio button control for page number selection.
+
+For each book in the result, display book title and a smaller cover image. Then create a link on the title linking to the second page to display detailed information of that book.  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Milestone 2: Book Search</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/milestone2Script.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Milestone 2: Book Search</h1>
+  <p>This milestone involves working with the Google Books API for book searching.</p>
+</header>
+
+  <nav>
+    <h2>Project Information</h2>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="milestone2.html">Milestone 2</a></li>
+        <li><a href="milestone3.html">Milestone 3</a></li>
+        <li><a href="milestone4.html">Milestone 4</a></li>
+      </ul>
+  </nav>
+
+  <section id="searchSection">
+    <h2>Search Books</h2>
+      <input type="text" id="searchInput" placeholder="Enter book title or keyword" />
+      <button id="searchButton">Search</button>
+  </section>
+
+  <section id="searchResults">
+    <h2>Search Results</h2>
+      <div id="resultsContainer"></div>
+      <div id="pagination"></div>
+  </section>
+
+<footer>
+  <p>&copy; 2024 Daniel Miller</p>
+</footer>
+</body>
+</html>

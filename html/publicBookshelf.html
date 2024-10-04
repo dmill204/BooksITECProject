@@ -1,0 +1,42 @@
+<!-- Your public bookshelf page: you should display books from one of your public bookshelves.
+
+Create a public bookshelf in your library at the Google Books website (https://books.google.com) and add some your preferred books first. You will do this manually through the Google Books website in this milestone.
+
+Use the API to get the books in this bookshelf and display them nicely (similar to your search results), with each linked to your book details page.  -->
+
+<!-- TODO: FIND MY PERSONAL BOOK SHELF ID TO PUT INTO myBookshelf.js SOMEWHERE -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Public Bookshelf</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/myBookshelf.js" defer></script> <!-- Separate JS file for bookshelf -->
+</head>
+<body>
+<header>
+  <h1>My Public Bookshelf</h1>
+</header>
+
+  <nav>
+    <h2>Project Information</h2>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="milestone2.html">Milestone 2</a></li>
+        <li><a href="milestone3.html">Milestone 3</a></li>
+        <li><a href="milestone4.html">Milestone 4</a></li>
+      </ul>
+  </nav>
+
+  <section id="bookshelfContainer">
+    <h2>Books in My Bookshelf</h2>
+    <div id="bookshelfBooks"></div> <!-- Books will be populated here -->
+  </section>
+
+<footer>
+  <p>&copy; 2024 Daniel Miller</p>
+</footer>
+</body>
+</html>
