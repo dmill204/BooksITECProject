@@ -1,0 +1,35 @@
+<!-- Book details page: to display all information about a single book.
+
+Pass the book id parameter from the URL or other means.
+
+Dynamically constructed the Google Books API URL based on the book id parameter.
+
+Display as many details as you can about a single book (examine the JSON content), such as title, publisher, authors, description, image, price, etc.  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Details</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/milestone2Script.js" defer></script>
+  <script src="../js/bookDetails.js" defer></script>
+
+</head>
+<body>
+<header>
+  <h1>Milestone 2: Book Details</h1>
+</header>
+
+  <section id="bookInfo">
+    <h2>Book Information</h2>
+    <div id="bookDetailInfo"></div>
+  </section>
+
+<footer>
+  <p>&copy; 2024 Daniel Miller</p>
+</footer>
+</body>
+</html>

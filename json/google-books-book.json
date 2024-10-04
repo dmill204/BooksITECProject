@@ -1,0 +1,95 @@
+{
+  "kind": "books#volume",
+  "id": "Wfan6L9RGgYC",
+  "etag": "gllAQP+vDW4",
+  "selfLink": "https://www.googleapis.com/books/v1/volumes/Wfan6L9RGgYC",
+  "volumeInfo": {
+    "title": "The Modern Web",
+    "subtitle": "Multi-device Web Development with HTML5, CSS3, and JavaScript",
+    "authors": [
+      "Peter Gasston"
+    ],
+    "publisher": "No Starch Press",
+    "publishedDate": "2013",
+    "description": "<p><b>A Guide to Modern Web Development</b><br></p><p>Today's web technologies are evolving at near-light speed, bringing the promise of a seamless Internet ever closer to reality. When users can browse the Web on a three-inch phone screen as easily as on a fifty-inch HDTV, what's a developer to do?</p><p>Peter Gasston's <i>The Modern Web</i> will guide you through the latest and most important tools of device-agnostic web development, including HTML5, CSS3, and JavaScript. His plain-English explanations and practical examples emphasize the techniques, principles, and practices that you'll need to easily transcend individual browser quirks and stay relevant as these technologies are updated.</p><p>Learn how to:</p><p>* Plan your content so that it displays fluidly across multiple devices<br>* Design websites to interact with devices using the most up-to-date APIs, including Geolocation, Orientation, and Web Storage<br>* Incorporate cross-platform audio and video without using troublesome plug-ins<br>* Make images and graphics scalable on high-resolution devices with SVGUse powerful HTML5 elements to design better forms</p><p>Turn outdated websites into flexible, user-friendly ones that take full advantage of the unique capabilities of any device or browser. With the help of <i>The Modern Web</i>, you'll be ready to navigate the front lines of device-independent development.</p>",
+    "industryIdentifiers": [
+      {
+        "type": "ISBN_10",
+        "identifier": "1593274874"
+      },
+      {
+        "type": "ISBN_13",
+        "identifier": "9781593274870"
+      }
+    ],
+    "readingModes": {
+      "text": true,
+      "image": true
+    },
+    "pageCount": 264,
+    "printedPageCount": 266,
+    "dimensions": {
+      "height": "24.00 cm",
+      "width": "17.80 cm",
+      "thickness": "1.50 cm"
+    },
+    "printType": "BOOK",
+    "categories": [
+      "Computers / Web / Design",
+      "Computers / Software Development & Engineering / General",
+      "Computers / Programming Languages / JavaScript",
+      "Computers / Programming Languages / HTML",
+      "Computers / Web / Web Programming"
+    ],
+    "averageRating": 5,
+    "ratingsCount": 2,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.4.4.0.preview.3",
+    "panelizationSummary": {
+      "containsEpubBubbles": false,
+      "containsImageBubbles": false
+    },
+    "imageLinks": {
+      "smallThumbnail": "http://books.google.com/books/content?id=Wfan6L9RGgYC&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE72vXRIZwF2sa5rgsuE_ggsjkNjWhM2f_9MSbDaJACJW9ztZfIqizZHbW2G-9AI7LIBqiWOakBAVThi_UGg0BY1a88dxOPp4Pn-Qy-OgUpDnBrk4HzKzxFeQx-rDO5XJEtaPonpS&source=gbs_api",
+      "thumbnail": "http://books.google.com/books/content?id=Wfan6L9RGgYC&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE716IbWBOpJxJ_-6k917_ZkecisdL50av3cyL1fZ448CyhFf62qE1zHtP0131OdvnEEFYsotPKsJwLLZks8nHY-KPdeIok8kDCL0WZARhOVCWDkzr2v4H-PX_-uMA7xy7ulIynNU&source=gbs_api",
+      "small": "http://books.google.com/books/content?id=Wfan6L9RGgYC&printsec=frontcover&img=1&zoom=2&edge=curl&imgtk=AFLRE73JHLkj9Rb_qIupP60Y9fU5hGUeK1UGzEKH7xx1SNezAwFRuz4PjE3YXCJLM-XQ1CyLLwBWrSpe8TWgZ-RIra99iWcGwSfyRnK-1lkKqq2ALNNORD_tbJUAEtfDWoNsPkXnlqxR&source=gbs_api",
+      "medium": "http://books.google.com/books/content?id=Wfan6L9RGgYC&printsec=frontcover&img=1&zoom=3&edge=curl&imgtk=AFLRE71KsAS1KneIbTddTjD_fcjrlqG4FJgH-uujEV5TogponapAYNfsdP69JskDvlXZpJuRJy79QqT8DMY8dQPx-XJ9VdIDUbroh_mplA9s1zQJnT2QmPz2I-i8uuxZGmsYQ9I8vXHS&source=gbs_api",
+      "large": "http://books.google.com/books/content?id=Wfan6L9RGgYC&printsec=frontcover&img=1&zoom=4&edge=curl&imgtk=AFLRE71elLMmC-TzdvolkkJnBJJUgrA2wP9J3XlBl9pVwPoOQ7UPyBK1bQYCBzqcoWQJTsq5az_vUiwoP4BS354byBCQ46NnW4zNouI_uVq1MbCkR5bPA-WDD-LC9BdFYC3dU688WndO&source=gbs_api",
+      "extraLarge": "http://books.google.com/books/content?id=Wfan6L9RGgYC&printsec=frontcover&img=1&zoom=6&edge=curl&imgtk=AFLRE72z1rbtqzGb-Z2gTV_9SUjywl_EtlDP_nppllmXH6Fpqvewhi8u6qymuur4Su0nRvNZ9h4Hpj6MQPIxivA-fUGVDfcJnP0U4RHaRKRvJiMLiQz_nbaSPFwST8-gYn6835O81EjX&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.com/books?id=Wfan6L9RGgYC&hl=&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=Wfan6L9RGgYC&source=gbs_api",
+    "canonicalVolumeLink": "https://play.google.com/store/books/details?id=Wfan6L9RGgYC"
+  },
+  "layerInfo": {
+    "layers": [
+      {
+        "layerId": "geo",
+        "volumeAnnotationsVersion": "9"
+      }
+    ]
+  },
+  "saleInfo": {
+    "country": "US",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+  },
+  "accessInfo": {
+    "country": "US",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+      "isAvailable": true
+    },
+    "pdf": {
+      "isAvailable": true
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=Wfan6L9RGgYC&hl=&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+  }
+}
