@@ -3,7 +3,7 @@
 
 $(document).ready(function () {
   const clientId = '1021327201447-cdp7o2f7fkouo8krbk3bdpve5dolqgb3.apps.googleusercontent.com'; // Your Client ID
-  const redirectUri = 'http://localhost:63342/GoogleAPIBooks/html/publicBookshelf.html'; // Your Redirect URI
+  const redirectUri = 'https://dmill204.github.io/BooksITECProject/html/publicBookshelf.html'; // Use the GitHub Pages URL
   const apiKey = 'AIzaSyDOqNcZ9LOG5QCSKdvsn4DaVed-ej2HRek'; // Your API key
   const bookshelfId = '105455315055651775681'; // Your bookshelf ID
 
