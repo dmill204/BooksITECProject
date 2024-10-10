@@ -30,7 +30,6 @@ $(document).ready(function () {
     return token;
   }
 
-  // Function to fetch and display books from the public bookshelf
   function fetchPublicBookshelf() {
     const accessToken = getAccessToken();
 
@@ -43,6 +42,7 @@ $(document).ready(function () {
 
     $.getJSON(apiUrl)
       .done(function (data) {
+        console.log('Bookshelf data:', data); // Log the data returned from the API
         if (data.items) {
           totalResults = data.items; // Store all results
           displayResults(); // Display the first set of results
@@ -55,9 +55,8 @@ $(document).ready(function () {
         $("#publicshelfResultsContainer").html(`<p>${errorMessage}</p>`);
         console.error("API Request Failed: ", textStatus, errorThrown, jqXHR);
       });
-
-
   }
+
 
   // Function to display search results
   function displayResults() {

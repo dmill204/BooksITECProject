@@ -60,12 +60,13 @@
 </footer>
 
 <script>
-  const CLIENT_ID = '1021327201447-cdp7o2f7fkouo8krbk3bdpve5dolqgb3.apps.googleusercontent.com'; /
+  const CLIENT_ID = '1021327201447-cdp7o2f7fkouo8krbk3bdpve5dolqgb3.apps.googleusercontent.com';
   const API_KEY = 'AIzaSyDOqNcZ9LOG5QCSKdvsn4DaVed-ej2HRek';
   const SCOPES = 'https://www.googleapis.com/auth/books';
 
   // Load the auth2 library
   function handleClientLoad() {
+    console.log("Google API client loaded"); // Add this for debugging
     gapi.load('client:auth2', initClient);
   }
 
@@ -77,8 +78,13 @@
       scope: SCOPES,
       discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/books/v1/rest'],
     }).then(() => {
+      if (!gapi.auth2) {
+        console.error("Google Auth2 failed to initialize");
+      }
       gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
       updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+    }).catch((error) => {
+      console.error("Error initializing Google API client:", error);
     });
   }
 
@@ -99,6 +105,7 @@
 
   // Function to handle the sign-in button click
   function handleAuthClick() {
+    console.log("Login button clicked"); // Add this for debugging
     gapi.auth2.getAuthInstance().signIn();
   }
 
@@ -113,7 +120,7 @@
 
     // Set up login and logout buttons
     $('#loginButton').click(handleAuthClick);
-    // $('#logoutButton').click(handleSignOutClick);
+    $('#logoutButton').click(handleSignOutClick);
 
     // Set up search button functionality
     $('#searchButton').click(function () {
