@@ -6,7 +6,9 @@
   <title>Milestone 3: Book Search AJAX</title>
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://apis.google.com/js/api.js" onload="handleClientLoad()"></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
+
   <script src="../js/milestone3Script.js" defer></script>
 </head>
 <body>
@@ -37,7 +39,13 @@
   <h2>Books in My Bookshelf</h2>
   <div id="publicshelfResultsContainer"></div>
   <button id="loginButton">Login</button>
-<!--  <button id="logoutButton" style="display:none;">Logout</button> -->
+<!--  <div id="userProfileContainer"></div>-->
+</section>
+
+
+<section id="detailedBookFromBookshelfContainer">
+  <h2>Book Detail Result</h2>
+  <div id="bookDetailsSection" style="display: none;"></div> <!-- New section for book details -->
 </section>
 
 <section id="searchSection">
@@ -62,65 +70,38 @@
 <script>
   const CLIENT_ID = '1021327201447-cdp7o2f7fkouo8krbk3bdpve5dolqgb3.apps.googleusercontent.com';
   const API_KEY = 'AIzaSyDOqNcZ9LOG5QCSKdvsn4DaVed-ej2HRek';
-  const SCOPES = 'https://www.googleapis.com/auth/books';
+  const SCOPES = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/books';
 
-  // Load the auth2 library
-  function handleClientLoad() {
-    console.log("Google API client loaded"); // Add this for debugging
-    gapi.load('client:auth2', initClient);
-  }
+  let tokenClient;
 
-  // Initialize the Google API client
+  // Initialize the Google Identity Services
   function initClient() {
-    gapi.client.init({
-      apiKey: API_KEY,
-      clientId: CLIENT_ID,
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
       scope: SCOPES,
-      discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/books/v1/rest'],
-    }).then(() => {
-      if (!gapi.auth2) {
-        console.error("Google Auth2 failed to initialize");
-      }
-      gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-      updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-    }).catch((error) => {
-      console.error("Error initializing Google API client:", error);
+      callback: (response) => {
+        if (response.error) {
+          console.error('Error in authentication:', response.error);
+          return;
+        }
+        localStorage.setItem('access_token', response.access_token); // Store access token
+        fetchPublicBookshelf();
+        $('#loginButton').hide();
+      },
     });
   }
 
-  // Update the UI based on the user's sign-in status
-  function updateSigninStatus(isSignedIn) {
-    if (isSignedIn) {
-      fetchPublicBookshelf();
-      $('#loginButton').hide();
-      // $('#logoutButton').show();
-    } else {
-      $('#publicshelfResultsContainer').text('Please log in to view your bookshelf.');
-      $('#loginButton').show();
-      // $('#logoutButton').hide();
-      $('#resultsContainer').empty(); // Clear previous results
-      $('#bookDetailsContainer').empty(); // Clear previous book details
-    }
-  }
-
-  // Function to handle the sign-in button click
+  // Function to handle the login button click
   function handleAuthClick() {
-    console.log("Login button clicked"); // Add this for debugging
-    gapi.auth2.getAuthInstance().signIn();
-  }
-
-  // Function to handle the sign-out button click
-  function handleSignOutClick() {
-    gapi.auth2.getAuthInstance().signOut();
+    tokenClient.requestAccessToken({ prompt: 'consent' });
   }
 
   $(document).ready(function () {
-    // Load the API client and auth2 library
-    handleClientLoad();
+    // Ensure initClient is called only after the google library is loaded
+    initClient();
 
-    // Set up login and logout buttons
+    // Set up login button functionality
     $('#loginButton').click(handleAuthClick);
-    $('#logoutButton').click(handleSignOutClick);
 
     // Set up search button functionality
     $('#searchButton').click(function () {
@@ -133,46 +114,114 @@
     });
   });
 
-  // Function to fetch public bookshelf
   function fetchPublicBookshelf() {
-    const apiUrl = `https://www.googleapis.com/books/v1/mylibrary/bookshelves?key=${API_KEY}`;
-    $.getJSON(apiUrl)
+    const apiUrl = 'https://www.googleapis.com/books/v1/mylibrary/bookshelves';
+    $.ajax({
+      url: apiUrl,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('access_token') // Use the access token
+      }
+    })
       .done(function (shelves) {
         if (shelves.items.length > 0) {
-          const bookshelfId = shelves.items[0].id;
+          const bookshelfId = shelves.items[0].id; // Use the first shelf
           fetchBooksFromBookshelf(bookshelfId);
         } else {
           $('#publicshelfResultsContainer').text('No bookshelves found.');
         }
       })
       .fail(function () {
-        $('#publicshelfResultsContainer').text('Error fetching bookshelves.');
+        $('#publicshelfResultsContainer').text('Error fetching bookshelves. Check if you are logged in.');
+      })
+      .always(fetchUserProfile); // Fetch user profile whether the shelves fetch succeeds or fails
+  }
+
+
+  function fetchUserProfile() {
+    const userProfileUrl = 'https://www.googleapis.com/userinfo/v2/me'; // URL to fetch user profile
+    const accessToken = localStorage.getItem('access_token');
+    console.log('Fetching user profile with token:', accessToken); // Log token for debugging
+    $.ajax({
+      url: userProfileUrl,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + accessToken // Use the access token
+      }
+    })
+      .done(function (profile) {
+        $('#userProfileContainer').html(`
+            <p>Name: ${profile.name}</p>
+            <p>Email: ${profile.email}</p>
+        `);
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+        console.error('Error fetching user profile:', textStatus, errorThrown);
+        console.error('Response:', jqXHR.responseText);
+        $('#userProfileContainer').text('Error fetching user profile.');
       });
   }
 
+
+
+
   // Function to fetch books from a specific bookshelf
   function fetchBooksFromBookshelf(bookshelfId) {
-    const apiUrl = `https://www.googleapis.com/books/v1/mylibrary/bookshelves/${bookshelfId}/volumes?key=${API_KEY}`;
-    $.getJSON(apiUrl)
+    const apiUrl = `https://www.googleapis.com/books/v1/mylibrary/bookshelves/${bookshelfId}/volumes`;
+    $.ajax({
+      url: apiUrl,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('access_token') // Use the access token
+      }
+    })
       .done(function (data) {
-        displayBooks(data.items);
+        console.log('Bookshelf contents:', data); // Log the entire response
+        if (data.items && data.items.length > 0) {
+          displayBooks(data.items);
+        } else {
+          $('#publicshelfResultsContainer').text('No books found in this bookshelf.');
+        }
       })
       .fail(function () {
         $('#publicshelfResultsContainer').text('Error fetching bookshelf contents.');
       });
   }
 
-  // Function to display books on the bookshelf
+
+
   function displayBooks(books) {
     $('#publicshelfResultsContainer').empty();
     if (books && books.length > 0) {
       books.forEach(book => {
-        $('#publicshelfResultsContainer').append(`<p>${book.volumeInfo.title}</p>`);
+        const title = book.volumeInfo.title;
+        const authors = book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown Author';
+        const coverImage = book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'No image available';
+
+        // Create a clickable title as a hyperlink
+        const bookItem = $(`
+        <div class="book">
+          <img src="${coverImage}" alt="${title} cover" />
+          <h3>
+            <a href="#" class="book-title" data-id="${book.id}">${title}</a>
+          </h3>
+        </div>
+      `);
+
+        // Append the book item to the results container
+        $('#publicshelfResultsContainer').append(bookItem);
+
+        // Add click event to the book title
+        bookItem.find('.book-title').click(function (event) {
+          event.preventDefault(); // Prevent the default anchor click behavior
+          showBookDetails(book.id); // Fetch and display book details
+        });
       });
     } else {
       $('#publicshelfResultsContainer').append('<p>No books found.</p>');
     }
   }
+
 
   // Function to search for books based on user input
   function searchBooks(query) {
@@ -207,20 +256,34 @@
   // Function to show book details
   function showBookDetails(bookId) {
     const apiUrl = `https://www.googleapis.com/books/v1/volumes/${bookId}?key=${API_KEY}`;
+
+    // Fetch book details
     $.getJSON(apiUrl)
       .done(function (book) {
-        const details = `
-          <h2>${book.volumeInfo.title}</h2>
-          <p><strong>Authors:</strong> ${book.volumeInfo.authors.join(', ')}</p>
-          <p><strong>Published Date:</strong> ${book.volumeInfo.publishedDate}</p>
-          <p><strong>Description:</strong> ${book.volumeInfo.description}</p>
-        `;
-        $('#bookDetailsContainer').html(details);
+        const volumeInfo = book.volumeInfo;
+        const imageLinks = volumeInfo.imageLinks || {};
+        const thumbnail = imageLinks.thumbnail || 'path/to/default/image.jpg'; // Fallback for missing images
+
+        const detailsHtml = `
+                <div class="book-details">
+                    <img src="${thumbnail}" alt="Book Cover" />
+                    <h3>${volumeInfo.title || 'No Title Available'}</h3>
+                    <h4>${volumeInfo.subtitle || ''}</h4>
+                    <p><strong>Authors:</strong> ${volumeInfo.authors ? volumeInfo.authors.join(', ') : 'No Authors Available'}</p>
+                    <p><strong>Publisher:</strong> ${volumeInfo.publisher || 'No Publisher Available'}</p>
+                    <p><strong>Published Date:</strong> ${volumeInfo.publishedDate || 'No Date Available'}</p>
+                    <p><strong>Description:</strong> ${volumeInfo.description || 'No Description Available'}</p>
+                </div>
+            `;
+
+        // Populate and show the details in the new section
+        $("#bookDetailsSection").html(detailsHtml).show();
       })
       .fail(function () {
-        $('#bookDetailsContainer').text('Error fetching book details.');
+        $('#bookDetailsSection').text('Error fetching book details.').show();
       });
   }
+
 </script>
 </body>
 </html>
