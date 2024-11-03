@@ -2,9 +2,379 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Milestone 4: SPA UI</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script src="../js/milestone4Script.js" defer></script>
 </head>
 <body>
+<header>
+  <h1>Milestone 4 Page: SPA UI</h1>
+  <p>This milestone involves applying a template design for the UI leveraging Moustache.js</p>
+</header>
 
+<nav>
+  <h2>Main Menu</h2>
+  <ul>
+    <li><a href="./milestone3.html">Home (Book Search AJAX)</a></li>
+  </ul>
+</nav>
+
+<nav>
+  <h2>Project Information</h2>
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../html/milestone1.html">Milestone 1</a></li>
+    <li><a href="../html/milestone2.html">Milestone 2</a></li>
+    <li><a href="../html/milestone3.html">Milestone 3</a></li>
+    <li><a href="../html/milestone4.html">Milestone 4</a></li>
+  </ul>
+</nav>
+
+<section id="bookshelfContainer">
+  <h2>Books in My Bookshelf</h2>
+  <div id="publicshelfResultsContainer"></div>
+  <button id="loginButton">Login</button>
+  <!--  <div id="userProfileContainer"></div>-->
+</section>
+
+
+<section id="detailedBookFromBookshelfContainer">
+  <h2>Book Detail Result</h2>
+  <div id="bookDetailsSection" style="display: none;"></div> <!-- New section for book details -->
+</section>
+
+<section id="searchSection">
+  <h2>Search Books</h2>
+  <input type="text" id="searchInput" placeholder="Enter book title or keyword" />
+  <button id="searchButton">Search</button>
+</section>
+
+<section id="searchResults">
+  <h2>Search Results</h2>
+  <!-- toggle views -->
+  <div id="viewToggleButtons" style="display: none;">
+    <button id="gridViewBtn">Grid View</button>
+    <button id="listViewBtn">List View</button>
+    <!-- end toggle view -->
+  </div>
+  <div id="resultsContainer"></div>
+  <div id="pagination">
+    <div id="pageLinks"></div>
+  </div>
+  <div id="bookDetailsContainer" class="book-details-container"></div>
+</section>
+
+<!-- Templates for Grid and List Views -->
+<script id="grid-template" type="text/template">
+  <div class="book-grid">
+    {{#books}}
+    <div class="book">
+      <img src="{{thumbnail}}" alt="{{title}} cover" />
+      <h3><a href="#" class="book-title" data-id="{{id}}">{{title}}</a></h3>
+      <p>{{authors}}</p>
+    </div>
+    {{/books}}
+  </div>
+</script>
+
+<script id="list-template" type="text/template">
+  <ul class="book-list">
+    {{#books}}
+    <li>
+      <img src="{{thumbnail}}" alt="{{title}} cover" />
+      <div>
+        <h3><a href="#" class="book-title" data-id="{{id}}">{{title}}</a></h3>
+        <p>{{authors}}</p>
+      </div>
+    </li>
+    {{/books}}
+  </ul>
+</script>
+
+<footer>
+  <p>&copy; 2024 Daniel Miller</p>
+</footer>
+
+<script>
+  const CLIENT_ID = '1021327201447-cdp7o2f7fkouo8krbk3bdpve5dolqgb3.apps.googleusercontent.com';
+  const API_KEY = 'AIzaSyDOqNcZ9LOG5QCSKdvsn4DaVed-ej2HRek';
+  const SCOPES = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/books';
+
+  let tokenClient;
+  let currentView = 'grid'; // Default view
+  let searchResults = []; // Variable to store the current search results
+
+  // Initialize the Google Identity Services
+  function initClient() {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      callback: (response) => {
+        if (response.error) {
+          console.error('Error in authentication:', response.error);
+          return;
+        }
+        localStorage.setItem('access_token', response.access_token); // Store access token
+        fetchPublicBookshelf();
+        $('#loginButton').hide();
+      },
+    });
+  }
+
+  // Function to handle the login button click
+  function handleAuthClick() {
+    tokenClient.requestAccessToken({ prompt: 'consent' });
+  }
+
+  $(document).ready(function () {
+    // Ensure initClient is called only after the google library is loaded
+    initClient();
+
+    // Set up login button functionality
+    $('#loginButton').click(handleAuthClick);
+
+    // Set up search button functionality
+    $('#searchButton').click(function () {
+      const query = $('#searchInput').val();
+      if (query) {
+        currentView = 'grid'; // Ensure default view is grid before searching
+        searchBooks(query);
+      } else {
+        $('#resultsContainer').text('Please enter a title or keyword to search.');
+      }
+    });
+
+    // Toggle between grid and list view
+    $('#gridViewBtn').click(() => {
+      currentView = 'grid';
+      console.log('Switching to Grid View');
+      renderBooks(searchResults);
+    });
+
+    $('#listViewBtn').click(() => {
+      currentView = 'list';
+      console.log('Switching to List View');
+      renderBooks(searchResults);
+    });
+  });
+
+  function fetchPublicBookshelf() {
+    const apiUrl = 'https://www.googleapis.com/books/v1/mylibrary/bookshelves';
+    $.ajax({
+      url: apiUrl,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('access_token') // Use the access token
+      }
+    })
+      .done(function (shelves) {
+        if (shelves.items.length > 0) {
+          const bookshelfId = shelves.items[0].id; // Use the first shelf
+          fetchBooksFromBookshelf(bookshelfId);
+        } else {
+          $('#publicshelfResultsContainer').text('No bookshelves found.');
+        }
+      })
+      .fail(function () {
+        $('#publicshelfResultsContainer').text('Error fetching bookshelves. Check if you are logged in.');
+      })
+      .always(fetchUserProfile); // Fetch user profile whether the shelves fetch succeeds or fails
+  }
+
+
+  function fetchUserProfile() {
+    const userProfileUrl = 'https://www.googleapis.com/userinfo/v2/me'; // URL to fetch user profile
+    const accessToken = localStorage.getItem('access_token');
+    console.log('Fetching user profile with token:', accessToken); // Log token for debugging
+    $.ajax({
+      url: userProfileUrl,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + accessToken // Use the access token
+      }
+    })
+      .done(function (profile) {
+        $('#userProfileContainer').html(`
+            <p>Name: ${profile.name}</p>
+            <p>Email: ${profile.email}</p>
+        `);
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+        console.error('Error fetching user profile:', textStatus, errorThrown);
+        console.error('Response:', jqXHR.responseText);
+        $('#userProfileContainer').text('Error fetching user profile.');
+      });
+  }
+
+
+
+
+  // Function to fetch books from a specific bookshelf
+  function fetchBooksFromBookshelf(bookshelfId) {
+    const apiUrl = `https://www.googleapis.com/books/v1/mylibrary/bookshelves/${bookshelfId}/volumes`;
+    $.ajax({
+      url: apiUrl,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('access_token') // Use the access token
+      }
+    })
+      .done(function (data) {
+        console.log('Bookshelf contents:', data); // Log the entire response
+        if (data.items && data.items.length > 0) {
+          displayBooks(data.items);
+        } else {
+          $('#publicshelfResultsContainer').text('No books found in this bookshelf.');
+        }
+      })
+      .fail(function () {
+        $('#publicshelfResultsContainer').text('Error fetching bookshelf contents.');
+      });
+  }
+
+  function displayBooks(books) {
+    $('#publicshelfResultsContainer').empty();
+    if (books && books.length > 0) {
+      books.forEach(book => {
+        const title = book.volumeInfo.title;
+        const authors = book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown Author';
+        const coverImage = book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'No image available';
+
+        // Create a clickable title as a hyperlink
+        const bookItem = $(`
+        <div class="book">
+          <img src="${coverImage}" alt="${title} cover" />
+          <h3>
+            <a href="#" class="book-title" data-id="${book.id}">${title}</a>
+          </h3>
+        </div>
+      `);
+
+        // Append the book item to the results container
+        $('#publicshelfResultsContainer').append(bookItem);
+
+        // Add click event to the book title
+        bookItem.find('.book-title').click(function (event) {
+          event.preventDefault(); // Prevent the default anchor click behavior
+          showBookDetails(book.id); // Fetch and display book details
+        });
+      });
+    } else {
+      $('#publicshelfResultsContainer').append('<p>No books found.</p>');
+    }
+  }
+
+
+  // Function to search for books based on user input
+  function searchBooks(query) {
+    const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${API_KEY}`;
+    $.getJSON(apiUrl)
+      .done(function (data) {
+        if (data.items && data.items.length > 0) {
+          $('#viewToggleButtons').show(); // Show view toggles once results are displayed
+          searchResults = data.items; // Cache the results
+          displaySearchResults(searchResults); // Render with the current view setting
+        } else {
+          $('#resultsContainer').text('No books found.');
+        }
+      })
+      .fail(function () {
+        $('#resultsContainer').text('Error fetching search results.');
+      });
+  }
+
+  // Function to render books in the selected view (grid or list)
+  function renderBooks(books) {
+    if (!books || books.length === 0) {
+      $('#resultsContainer').html('<p>No books found.</p>');
+      return;
+    }
+
+    const viewTemplate = currentView === 'grid' ? '#grid-template' : '#list-template';
+    const template = $(viewTemplate).html();
+    const bookData = books.map(book => ({
+      id: book.id,
+      title: book.volumeInfo.title,
+      authors: book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown Author',
+      thumbnail: book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'No image available'
+    }));
+    const renderedHtml = Mustache.render(template, { books: bookData });
+    $('#resultsContainer').html(renderedHtml);
+
+    // Ensure click events are bound to the dynamically generated book titles
+    $('.book-title').off('click').on('click', function(event) {
+      event.preventDefault(); // Prevent the default scrolling behavior
+      const bookId = $(this).data('id');
+      showBookDetails(bookId); // Call to display book details
+    });
+  }
+
+  // Function to display search results
+  function displaySearchResults(books) {
+    $('#resultsContainer').empty();
+    if (books && books.length > 0) {
+      // Select the appropriate template based on the current view
+      const viewTemplate = currentView === 'grid' ? '#grid-template' : '#list-template';
+      const template = $(viewTemplate).html();
+
+      // Prepare data for Mustache rendering
+      const bookData = books.map(book => ({
+        id: book.id,
+        title: book.volumeInfo.title,
+        authors: book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown Author',
+        thumbnail: book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'No image available'
+      }));
+
+      // Render the template with book data using Mustache
+      const renderedHtml = Mustache.render(template, { books: bookData });
+      $('#resultsContainer').html(renderedHtml);
+
+      // Attach click event to each book title for showing details
+      $('.book-title').click(function(event) {
+        event.preventDefault();
+        const bookId = $(this).data('id');
+        showBookDetails(bookId);
+      });
+    } else {
+      $('#resultsContainer').html('<p>No books found.</p>');
+    }
+  }
+
+  // Function to show book details
+  function showBookDetails(bookId) {
+    const apiUrl = `https://www.googleapis.com/books/v1/volumes/${bookId}?key=${API_KEY}`;
+
+    // Fetch book details
+    $.getJSON(apiUrl)
+      .done(function (book) {
+        const volumeInfo = book.volumeInfo;
+        const imageLinks = volumeInfo.imageLinks || {};
+        const thumbnail = imageLinks.thumbnail || 'path/to/default/image.jpg'; // Fallback for missing images
+
+        const detailsHtml = `
+                <div class="book-details">
+                    <img src="${thumbnail}" alt="Book Cover" />
+                    <h3>${volumeInfo.title || 'No Title Available'}</h3>
+                    <h4>${volumeInfo.subtitle || ''}</h4>
+                    <p><strong>Authors:</strong> ${volumeInfo.authors ? volumeInfo.authors.join(', ') : 'No Authors Available'}</p>
+                    <p><strong>Publisher:</strong> ${volumeInfo.publisher || 'No Publisher Available'}</p>
+                    <p><strong>Published Date:</strong> ${volumeInfo.publishedDate || 'No Date Available'}</p>
+                    <p><strong>Description:</strong> ${volumeInfo.description || 'No Description Available'}</p>
+                </div>
+            `;
+
+        // Populate and show the details in the new section
+        $(".book-details-container").html(detailsHtml).show();
+      })
+      .fail(function () {
+        $('.book-details-container').text('Error fetching book details.').show();
+      });
+  }
+</script>
 </body>
 </html>

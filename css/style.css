@@ -43,7 +43,7 @@ a:hover {
 }
 
 #pagination {
-  margin-top: 20px;
+  margin-top: 60px;
   text-align: center;
 }
 
@@ -86,6 +86,8 @@ a:hover {
   margin-top: 20px; /* Spacing above the book details */
   border-top: 1px solid #ccc; /* Line separating details from results */
   padding-top: 20px; /* Padding for the top */
+  max-height: 500px; /* Set the height limit for scrollable area */
+  overflow-y: auto; /* Enables vertical scrolling */
 }
 
 .book-details img {
@@ -108,3 +110,126 @@ a:hover {
 .loginButton:hover {
   background-color: #218838; /* Darker green on hover */
 }
+
+/* Grid view layout for search results */
+.book-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.book-grid .book {
+  width: 200px; /* Each book occupies fixed width in grid view */
+  text-align: center;
+  flex-direction: column;
+}
+
+.book-grid .book img {
+  max-width: 100%; /* Image resizes within grid view */
+  margin-bottom: 10px; /* Space below image */
+}
+
+.book-list {
+  display: flex;
+  overflow-x: auto;
+  list-style-type: none;
+  padding: 0;
+  gap: 15px;
+  scroll-snap-type: x mandatory;
+}
+
+.book-list li {
+  flex: 0 0 200px; /* Sets each card to be 200px wide */
+  height: 320px; /* Adjust height to accommodate full thumbnail */
+  scroll-snap-align: start;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9; /* Optional: background color for the cards */
+}
+
+.book-list img {
+  width: 100%; /* Make the image fit the card width */
+  height: auto;
+  max-height: 180px; /* Limit the image height */
+  object-fit: contain; /* Show the full thumbnail without cropping */
+  margin-bottom: 10px; /* Space between image and title */
+}
+
+.book-title {
+  text-align: center;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.book-list p {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+.book-list .book {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px; /* Space between list items */
+}
+
+.book-list .book img {
+  width: 50px; /* Thumbnail size for list view */
+  height: auto;
+  margin-right: 15px;
+}
+
+/* General Card Styles */
+.book {
+  width: 200px; /* Fixed width for consistency */
+  height: 320px; /* Adjust height to fit content */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  margin: 15px;
+  box-sizing: border-box;
+}
+
+/* Styling for book images to show full thumbnail */
+.book img {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+/* Book title and author text alignment */
+.book-title {
+  text-align: center;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.book p {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+/* Flex layout for grid view */
+.book-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
