@@ -83,22 +83,22 @@ a:hover {
 }
 
 .book-details-container {
-  margin-top: 20px; /* Spacing above the book details */
-  border-top: 1px solid #ccc; /* Line separating details from results */
-  padding-top: 20px; /* Padding for the top */
-  max-height: 500px; /* Set the height limit for scrollable area */
-  overflow-y: auto; /* Enables vertical scrolling */
+  margin-top: 20px;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 .book-details img {
-  max-width: 150px; /* Limit image size */
-  float: left; /* Align image to the left */
-  margin-right: 15px; /* Space between image and text */
+  max-width: 150px;
+  float: left;
+  margin-right: 15px;
 }
 
 /* New styles for the login button */
 .loginButton {
-  background-color: #28a745; /* Green background */
+  background-color: #28a745;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -108,7 +108,7 @@ a:hover {
 }
 
 .loginButton:hover {
-  background-color: #218838; /* Darker green on hover */
+  background-color: #218838;
 }
 
 /* Grid view layout for search results */
@@ -119,14 +119,14 @@ a:hover {
 }
 
 .book-grid .book {
-  width: 200px; /* Each book occupies fixed width in grid view */
+  width: 200px;
   text-align: center;
   flex-direction: column;
 }
 
 .book-grid .book img {
-  max-width: 100%; /* Image resizes within grid view */
-  margin-bottom: 10px; /* Space below image */
+  max-width: 100%;
+  margin-bottom: 10px;
 }
 
 .book-list {
@@ -139,8 +139,8 @@ a:hover {
 }
 
 .book-list li {
-  flex: 0 0 200px; /* Sets each card to be 200px wide */
-  height: 320px; /* Adjust height to accommodate full thumbnail */
+  flex: 0 0 200px;
+  height: 320px;
   scroll-snap-align: start;
   padding: 10px;
   border: 1px solid #ccc;
@@ -148,15 +148,15 @@ a:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f9f9f9; /* Optional: background color for the cards */
+  background-color: #f9f9f9;
 }
 
 .book-list img {
-  width: 100%; /* Make the image fit the card width */
+  width: 100%;
   height: auto;
-  max-height: 180px; /* Limit the image height */
-  object-fit: contain; /* Show the full thumbnail without cropping */
-  margin-bottom: 10px; /* Space between image and title */
+  max-height: 180px;
+  object-fit: contain;
+  margin-bottom: 10px;
 }
 
 .book-title {
@@ -175,19 +175,19 @@ a:hover {
 .book-list .book {
   display: flex;
   align-items: center;
-  margin-bottom: 20px; /* Space between list items */
+  margin-bottom: 20px;
 }
 
 .book-list .book img {
-  width: 50px; /* Thumbnail size for list view */
+  width: 50px;
   height: auto;
   margin-right: 15px;
 }
 
-/* General Card Styles */
+/* Card Styles */
 .book {
-  width: 200px; /* Fixed width for consistency */
-  height: 320px; /* Adjust height to fit content */
+  width: 200px;
+  height: 340px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -197,9 +197,10 @@ a:hover {
   background-color: #f9f9f9;
   margin: 15px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
-/* Styling for book images to show full thumbnail */
+/* Book Image Styling */
 .book img {
   width: 100%;
   height: auto;
@@ -208,18 +209,29 @@ a:hover {
   margin-bottom: 10px;
 }
 
-/* Book title and author text alignment */
+/* Title Styling with Multi-Line Wrapping */
 .book-title {
   text-align: center;
   font-size: 16px;
   margin: 5px 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
+/* Author Styling */
 .book p {
   text-align: center;
   font-size: 14px;
   color: #555;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 /* Flex layout for grid view */
