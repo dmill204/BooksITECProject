@@ -139,6 +139,19 @@ $(document).ready(function () {
       });
   }
 
+  // Set up tab buttons to show/hide sections
+  $('#viewSearchResultsBtn').click(function () {
+    $('#searchResultsContent').show();
+    $('#publicBookshelfContent').hide();
+  });
+
+  $('#viewPublicBookshelfBtn').click(function () {
+    fetchPublicBookshelf(); // Fetch and display the public bookshelf when clicked
+    $('#searchResultsContent').hide();
+    $('#publicBookshelfContent').show();
+  });
+
+
   // Search button click event
   $("#searchButton").on("click", function () {
     const query = $("#searchInput").val().trim();
