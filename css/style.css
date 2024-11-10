@@ -258,20 +258,28 @@ a:hover {
 #searchHistorySection ul {
   list-style-type: none;
   padding: 0;
-  display: flex; /* Aligns list items in a horizontal row */
-  flex-wrap: wrap; /* Ensures items wrap to the next line if they don't fit */
-  gap: 10px; /* Adds space between the list items */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .search-history-link {
   color: blue;
   cursor: pointer;
   text-decoration: none;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  background-color: #f0f8ff;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 .search-history-link:hover {
+  background-color: #e6f7ff;
+  border-color: #0056b3;
   color: darkblue;
   text-transform: uppercase;
+  text-decoration: none;
+  font-weight: bold;
 }
-
-
