@@ -4,6 +4,51 @@ $(document).ready(function () {
   let currentPage = 1; // Current page number
   let totalResults = []; // Array to store all results
   const bookshelfId = '105455315055651775681'; // My bookshelf ID
+  let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || []; // Retrieve stored search history or initialize an empty array
+
+  // Function to save search history to localStorage and update the UI
+  function updateSearchHistory(query) {
+    // Check if the query already exists in the history
+    if (!searchHistory.includes(query)) {
+      searchHistory.unshift(query); // Add to the beginning of the array
+      if (searchHistory.length > 10) {
+        searchHistory.pop(); // Keep only the last 10 searches
+      }
+      localStorage.setItem('searchHistory', JSON.stringify(searchHistory)); // Store in localStorage
+      displaySearchHistory(); // Update the UI
+    }
+  }
+
+  // Function to display the search history
+  function displaySearchHistory() {
+    $('#searchHistoryList').empty(); // Clear current list
+
+    searchHistory.forEach(query => {
+      // Create an anchor element for better interaction
+      const historyItem = $('<li></li>').html(`<a href="#" class="search-history-link">${query}</a>`);
+
+      // Attach the click event to the anchor element
+      historyItem.find('.search-history-link').click(function (event) {
+        event.preventDefault(); // Prevent the default anchor behavior
+        $('#searchInput').val(query);
+        searchBooks(query); // Trigger the search when the history item is clicked
+      });
+
+      $('#searchHistoryList').append(historyItem);
+    });
+  }
+
+  // Call this function to display the search history on page load
+  displaySearchHistory();
+
+  // Modify the search button click event to save the query
+  $('#searchButton').click(function () {
+    const query = $('#searchInput').val().trim();
+    if (query) {
+      updateSearchHistory(query); // Update search history
+      searchBooks(query); // Perform the search
+    }
+  });
 
   // Function to create HTML for a single book item (limited info)
   function createBookItem(book) {

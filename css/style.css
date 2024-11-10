@@ -245,3 +245,33 @@ a:hover {
   list-style-type: none;
 }
 
+#searchContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+#searchSection, #searchHistorySection {
+  flex: 1;
+}
+
+#searchHistorySection ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex; /* Aligns list items in a horizontal row */
+  flex-wrap: wrap; /* Ensures items wrap to the next line if they don't fit */
+  gap: 10px; /* Adds space between the list items */
+}
+
+.search-history-link {
+  color: blue;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.search-history-link:hover {
+  color: darkblue;
+  text-transform: uppercase;
+}
+
+
